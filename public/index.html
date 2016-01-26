@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+    <title>Look I'm AJAXing!</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <!-- load bootstrap via CDN -->
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> <!-- load jquery via CDN -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <!-- load underscore via CDN -->
+</head>
+<body>
+<div class="col-sm-6 col-sm-offset-3">
+
+    <h1>Say it!</h1>
+
+    <!-- OUR FORM -->
+    <form action="" method="POST">
+
+        <!-- NAME -->
+
+        <!-- EMAIL -->
+
+        <div id="player-group" class="form-group">
+            <label for="player">Player</label>
+            <select class="form-control" name="player" id="player">
+
+            </select>
+        </div>
+
+        <div id="language-group" class="form-group">
+            <label for="language">Language</label>
+            <select class="form-control" name="language" id="language">
+
+            </select>
+        </div>
+
+        <div id="name-group" class="form-group">
+            <label for="text">Text</label>
+            <textarea type="text" class="form-control" name="text" placeholder="Some text here"></textarea>
+        </div>
+
+        <div id="name-group" class="form-group">
+            <label for="volume">volume</label>
+            <select class="form-control" name="volume" id="volume">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="33" selected>33</option>
+                <option value="50">50</option>
+                <option value="66">66</option>
+            </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-success">Submit <span class="fa fa-arrow-right"></span></button>
+
+    </form>
+
+</div>
+<script>
+
+    // magic.js
+    $(document).ready(function () {
+
+        // process the form
+        $('form').submit(function (event) {
+
+            // get the form data
+            // there are many ways to get this data using jQuery (you can use the class or id also)
+            var formData = {
+                'text': $('textarea[name=text]').val(),
+                'language': $('select[name=language]').val(),
+                'player':  $('select[name=player]').val(),
+                'volume':  $('select[name=volume]').val(),
+            };
+
+            // process the form
+            $.ajax({
+                        type: 'GET', // define the type of HTTP verb we want to use (POST for our form)
+                        url: '/say', // the url where we want to POST
+                        data: formData, // our data object
+                        dataType: 'html', // what type of data do we expect back from the server
+                        encode: true
+                    })
+                    // using the done promise callback
+                    .done(function (data) {
+
+                        // log data to the console so we can see
+                        console.log(data);
+
+                        // here we will handle errors and validation messages
+                    });
+
+            // stop the form from submitting the normal way and refreshing the page
+            event.preventDefault();
+        });
+
+        $.ajax({
+                    type: 'GET', // define the type of HTTP verb we want to use (POST for our form)
+                    url: '/languages', // the url where we want to POST
+                    dataType: 'json', // what type of data do we expect back from the server
+                    encode: true
+                })
+                // using the done promise callback
+                .done(function (data) {
+                    _.each(data, function (language, key) {
+                        $('select#language').append($("<option />").val(key).text(language.name));
+                    });
+                });
+
+        $.ajax({
+                    type: 'GET', // define the type of HTTP verb we want to use (POST for our form)
+                    url: '/players', // the url where we want to POST
+                    dataType: 'json', // what type of data do we expect back from the server
+                    encode: true
+                })
+                // using the done promise callback
+                .done(function (data) {
+                    _.each(data, function (player) {
+                        $('select#player').append($("<option />").val(player.host).text(player.name));
+                    });
+                });
+
+    });
+</script>
+</body>
+</html>
