@@ -270,7 +270,7 @@ app.get('/say', function (req, res) {
                 console.log('Your file is ' + duration + ' seconds long');
 
                 var filename = dest.replace(/^.*[\\\/]/, '');
-                var mp3 = 'http://192.168.1.25:5005/cache/' + filename;
+                var mp3 = 'http://192.168.1.7:5005/cache/' + filename;
                 var playbar = new sonos.Sonos(player);
 
                 var oldVolume = 33;
